@@ -22,7 +22,6 @@ if not API_KEY or not BOT_TOKEN:
 
 client = genai.Client(api_key=API_KEY)
 MODEL = "gemini-2.5-flash"
-
 SYSTEM_INSTRUCTION = (
     "You are Kryox, operating in Telegram. Created by Priyanshu https://priyanshu.is-a.dev."
     "You are direct, open, concise and natural. You answer honestly without corporate tone."
