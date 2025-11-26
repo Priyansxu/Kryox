@@ -77,10 +77,7 @@ async def handle_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         res = client.models.generate_content(
             model=MODEL,
-            contents=[
-                types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg"),
-                conversation
-            ],
+            contents=[types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg"), conversation],
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_INSTRUCTION,
                 automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
