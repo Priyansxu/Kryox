@@ -68,12 +68,12 @@ async def handle_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if "memory" not in context.user_data:
             context.user_data["memory"] = []
         context.user_data["memory"].append(f"User: {caption}")
-        conversation_text = "\n".join(context.user_data["memory"])
+        conversation = "\n".join(context.user_data["memory"])
         res = client.models.generate_content(
             model=MODEL,
             contents=[
                 types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg"),
-                conversation_text
+                conversation
             ],
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_INSTRUCTION
