@@ -40,7 +40,8 @@ async def handle_msg(update: Update, context: ContextTypes.DEFAULT_TYPE):
             model=MODEL,
             contents=conversation,
             config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_INSTRUCTION
+                system_instruction=SYSTEM_INSTRUCTION,
+automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
             ),
         )
         response = res.text or "No response."
@@ -76,7 +77,8 @@ async def handle_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 conversation
             ],
             config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_INSTRUCTION
+                system_instruction=SYSTEM_INSTRUCTION,
+automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
             ),
         )
         output = res.text or "No response."
@@ -113,7 +115,9 @@ async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
         res_answer = client.models.generate_content(
             model=MODEL,
             contents=conversation,
-            config=types.GenerateContentConfig(system_instruction=SYSTEM_INSTRUCTION),
+            config=types.GenerateContentConfig(system_instruction=SYSTEM_INSTRUCTION,
+automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
+),
         )
         response = res_answer.text or "No response."
         context.user_data["memory"].append(f"AI: {response}")
