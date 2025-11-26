@@ -111,7 +111,10 @@ async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
         res_transcribe = client.models.generate_content(
             model=MODEL,
             contents=[types.Part.from_bytes(data=audio_bytes, mime_type="audio/ogg"), "Transcribe this audio."],
-            config=types.GenerateContentConfig(system_instruction=SYSTEM_INSTRUCTION),
+            config=types.GenerateContentConfig(
+                system_instruction=SYSTEM_INSTRUCTION,
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
+            ),
         )
         text = res_transcribe.text or ""
 
