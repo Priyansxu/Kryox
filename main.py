@@ -65,18 +65,29 @@ async def handle_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
         with open(path, "rb") as f:
             image_bytes = f.read()
         caption = update.message.caption or "Analyze this image."
+        if "memory" not in context.user_data:
+            context.user_data["memory"] = []
+        context.user_data["memory"].append(f"User: {caption}")
+        conversation_text = "\n".join(context.user_data["memory"])
         res = client.models.generate_content(
             model=MODEL,
             contents=[
                 types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg"),
-                caption
+                conversation_text
             ],
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_INSTRUCTION
             ),
         )
         output = res.text or "No response."
-        await update.message.reply_text(output)
+        context.user_data["memory"].append(f"AI: {output}")
+        if len(context.user_data["memory"]) > 20:
+            context.user_data["memory"] = context.user_data["memory"][-20:]
+        if len(output) <= 4096:
+            await update.message.reply_text(output)
+        else:
+            for i in range(0, len(output), 4096):
+                await update.message.reply_text(output[i:i+4096])
     except Exception:
         await update.message.reply_text("Failed to analyze image.")
 
