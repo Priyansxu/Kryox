@@ -56,7 +56,7 @@ async def handle_msg(update: Update, context: ContextTypes.DEFAULT_TYPE):
             contents=context.user_data["history"],
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_INSTRUCTION,
-                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=False)
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
             )
         )
         reply = res.text or "No response."
@@ -95,7 +95,7 @@ async def handle_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
             contents=context.user_data["history"],
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_INSTRUCTION,
-                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=False)
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
             )
         )
 
@@ -132,7 +132,7 @@ async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
             }],
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_INSTRUCTION,
-                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=False)
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
             )
         )
 
@@ -144,7 +144,7 @@ async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
             contents=context.user_data["history"],
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_INSTRUCTION,
-                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=False)
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True)
             )
         )
 
