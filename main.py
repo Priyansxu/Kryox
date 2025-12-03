@@ -46,11 +46,7 @@ async def conversation(context, reply=None):
 async def handle_msg(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_text = update.message.text.strip()
     context.user_data.setdefault("history", [])
-
-    context.user_data["history"].append({
-        "role": "user",
-        "parts": [{"text": user_text}]
-    })
+    context.user_data["history"].append({"role": "user", "parts": [{"text": user_text}]})
 
     await context.bot.send_chat_action(update.effective_chat.id, "typing")
 
@@ -59,17 +55,15 @@ async def handle_msg(update: Update, context: ContextTypes.DEFAULT_TYPE):
             model=MODEL,
             contents=context.user_data["history"],
             config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_INSTRUCTION
+                system_instruction=SYSTEM_INSTRUCTION,
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=False)
             )
         )
         reply = res.text or "No response."
     except Exception:
         reply = "AI error. Try again."
 
-    context.user_data["history"].append({
-        "role": "model",
-        "parts": [{"text": reply}]
-    })
+    context.user_data["history"].append({"role": "model", "parts": [{"text": reply}]})
 
     async for chunk in conversation(context, reply):
         if chunk:
@@ -100,16 +94,14 @@ async def handle_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
             model=MODEL,
             contents=context.user_data["history"],
             config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_INSTRUCTION
+                system_instruction=SYSTEM_INSTRUCTION,
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=False)
             )
         )
 
         reply = res.text or "No response."
 
-        context.user_data["history"].append({
-            "role": "model",
-            "parts": [{"text": reply}]
-        })
+        context.user_data["history"].append({"role": "model", "parts": [{"text": reply}]})
 
         async for chunk in conversation(context, reply):
             if chunk:
@@ -131,41 +123,33 @@ async def handle_voice(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         res_transcribe = client.models.generate_content(
             model=MODEL,
-            contents=[
-                {
-                    "role": "user",
-                    "parts": [
-                        {"inline_data": {"mime_type": "audio/ogg", "data": audio_bytes}},
-                        {"text": "Transcribe this audio."}
-                    ]
-                }
-            ],
+            contents=[{
+                "role": "user",
+                "parts": [
+                    {"inline_data": {"mime_type": "audio/ogg", "data": audio_bytes}},
+                    {"text": "Transcribe this audio."}
+                ]
+            }],
             config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_INSTRUCTION
+                system_instruction=SYSTEM_INSTRUCTION,
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=False)
             )
         )
 
         text = res_transcribe.text or ""
-
-        context.user_data["history"].append({
-            "role": "user",
-            "parts": [{"text": text}]
-        })
+        context.user_data["history"].append({"role": "user", "parts": [{"text": text}]})
 
         res_answer = client.models.generate_content(
             model=MODEL,
             contents=context.user_data["history"],
             config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_INSTRUCTION
+                system_instruction=SYSTEM_INSTRUCTION,
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=False)
             )
         )
 
         reply = res_answer.text or "No response."
-
-        context.user_data["history"].append({
-            "role": "model",
-            "parts": [{"text": reply}]
-        })
+        context.user_data["history"].append({"role": "model", "parts": [{"text": reply}]})
 
         async for chunk in conversation(context, reply):
             if chunk:
